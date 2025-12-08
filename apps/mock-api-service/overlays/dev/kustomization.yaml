@@ -1,0 +1,6 @@
+bases:
+  - ../../base
+
+images:
+  - name: ghcr.io/syntaxnow-labs/mock-api-service
+    newTag: latest
