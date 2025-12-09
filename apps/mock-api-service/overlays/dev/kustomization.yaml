@@ -1,6 +1,11 @@
-bases:
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
   - ../../base
 
-images:
-  - name: ghcr.io/syntaxnow-labs/mock-api-service
-    newTag: latest
+configMapGenerator:
+  - name: mock-api-config
+    behavior: merge
+    files:
+      - values-dev.yaml
