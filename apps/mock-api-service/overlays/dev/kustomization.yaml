@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - ../../base
+  - ingress.yaml
 
 # THIS is what tells Kustomize to override image in the Deployment
 images:
