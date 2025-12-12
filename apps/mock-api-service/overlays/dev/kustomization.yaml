@@ -4,6 +4,11 @@ kind: Kustomization
 resources:
   - ../../base
 
+# THIS is what tells Kustomize to override image in the Deployment
+images:
+  - name: ghcr.io/syntaxnow-labs/mock-api-service
+    newTag: dev
+
 configMapGenerator:
   - name: mock-api-config
     behavior: create
