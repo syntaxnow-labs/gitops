@@ -14,6 +14,8 @@ spec:
       labels:
         app: mock-api-service
     spec:
+      imagePullSecrets:
+        - name: ghcr-creds
       containers:
         - name: mock-api-service
           image: ghcr.io/syntaxnow-labs/mock-api-service:latest
