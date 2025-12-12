@@ -6,6 +6,6 @@ resources:
 
 configMapGenerator:
   - name: mock-api-config
-    behavior: merge
+    behavior: create
     files:
       - values-dev.yaml
