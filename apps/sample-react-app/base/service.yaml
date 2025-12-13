@@ -3,6 +3,7 @@ kind: Service
 metadata:
   name: sample-react-app
 spec:
+  type: ClusterIP
   selector:
     app: sample-react-app
   ports:
