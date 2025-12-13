@@ -5,11 +5,12 @@ resources:
   - ../../base
   - ingress.yaml
 
+images:
+  - name: ghcr.io/syntaxnow-labs/sample-react-app
+    newTag: dev
+
 configMapGenerator:
-  - name: mock-api-config
+  - name: sample-react-config
     behavior: create
     files:
       - values-dev.yaml
-
-patches:
-  - path: patch-image.yaml
