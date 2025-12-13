@@ -5,11 +5,5 @@ resources:
   - ../../base
   - ingress.yaml
 
-configMapGenerator:
-  - name: sample-react-config
-    behavior: merge
-    files:
-      - values-main.yaml
-
 patches:
   - path: patch-image.yaml
