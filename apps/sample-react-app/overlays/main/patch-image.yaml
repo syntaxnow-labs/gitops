@@ -8,3 +8,4 @@ spec:
       containers:
         - name: sample-react-app
           image: "ghcr.io/syntaxnow-labs/sample-react-app:main-aa75afd851b8d3aaf24e3b8acd358f9b50ad0593"
+          
