@@ -1,0 +1,2 @@
+# React apps usually don’t need backend runtime config, but we keep it consistent.
+APP_ENV: dev
