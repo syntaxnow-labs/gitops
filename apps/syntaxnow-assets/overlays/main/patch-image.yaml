@@ -7,4 +7,4 @@ spec:
     spec:
       containers:
         - name: syntaxnow-assets
-          image: "ghcr.io/syntaxnow-labs/syntaxnow-assets:main-184f5a7"
+          image: "ghcr.io/syntaxnow-labs/syntaxnow-assets:main-df583ab"
