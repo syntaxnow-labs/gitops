@@ -7,4 +7,4 @@ spec:
     spec:
       containers:
         - name: mock-api-service
-          image: "ghcr.io/syntaxnow-labs/mock-api-service:dev-30491e1"
+          image: "ghcr.io/syntaxnow-labs/mock-api-service:dev-6fe2844"
