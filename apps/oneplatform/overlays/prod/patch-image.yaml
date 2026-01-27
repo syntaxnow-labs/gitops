@@ -7,4 +7,4 @@ spec:
     spec:
       containers:
         - name: oneplatform
-          image: "ghcr.io/syntaxnow-labs/oneplatform:prod-latest"
+          image: "ghcr.io/syntaxnow-labs/oneplatform:main-db267ad"
