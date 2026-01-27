@@ -18,6 +18,7 @@ set -e
 # ---------------------------------------------------
 
 APP_NAME=$1
+APP_TYPE=$2
 
 if [ -z "$APP_NAME" ]; then
   echo "Usage: ./scripts/bootstrap-app.sh <app-name>"
@@ -36,7 +37,24 @@ if [ -d "$APP_DIR" ]; then
   exit 1
 fi
 
+if [ -z "$APP_TYPE" ]; then
+  APP_TYPE="backend"
+fi
+
+if [[ "$APP_TYPE" != "backend" && "$APP_TYPE" != "frontend" ]]; then
+  echo "Invalid type: $APP_TYPE"
+  echo "Allowed: backend | frontend"
+  exit 1
+fi
+
+if [ "$APP_TYPE" = "frontend" ]; then
+  CONTAINER_PORT=80
+else
+  CONTAINER_PORT=9090
+fi
+
 echo "Bootstrapping GitOps structure for: $APP_LOWER"
+echo "App type: $APP_TYPE → Container port: $CONTAINER_PORT"
 
 # ---------------------------------------------------
 # Create folder structure
@@ -76,7 +94,7 @@ spec:
         - name: $APP_LOWER
           image: ghcr.io/syntaxnow-labs/$APP_LOWER:latest
           ports:
-            - containerPort: 9090
+            - containerPort: $CONTAINER_PORT
 EOF
 
 cat <<EOF > $APP_DIR/base/service.yaml
@@ -90,7 +108,7 @@ spec:
     app: $APP_LOWER
   ports:
     - port: 80
-      targetPort: 9090
+      targetPort: $CONTAINER_PORT
 EOF
 
 cat <<EOF > $APP_DIR/base/kustomization.yaml
