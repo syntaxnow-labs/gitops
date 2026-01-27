@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-f1
+spec:
+  template:
+    spec:
+      containers:
+        - name: test-f1
+          image: "ghcr.io/syntaxnow-labs/test-f1:qa-latest"

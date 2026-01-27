@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-f1
+  labels:
+    app: test-f1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-f1
+  template:
+    metadata:
+      labels:
+        app: test-f1
+    spec:
+      imagePullSecrets:
+        - name: ghcr-creds
+      containers:
+        - name: test-f1
+          image: ghcr.io/syntaxnow-labs/test-f1:latest
+          ports:
+            - containerPort: 9090
