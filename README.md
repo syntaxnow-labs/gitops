@@ -61,6 +61,24 @@ All sensitive values must be stored using:
  - **GitHub Actions** for automated image builds + GitOps updates
  - **GHCR** for container registry
 
+## GitOps App Bootstrap Script
+
+The `scripts/bootstrap-app.sh` script is used to scaffold a new application structure inside the GitOps repository.
+It automatically creates the standard folder layout under `apps/<app-name>/` including base manifests and environment overlays (dev, qa, prod).
+
+The generated templates include Kubernetes Deployment, Service, Ingress, Kustomization files, and an image patch file that CI/CD workflows can later update with the correct container tag.
+
+This script ensures every new service follows the same GitOps conventions and prevents manual YAML copy/paste errors.
+
+Example usage:
+
+```bash
+
+chmod +x scripts/bootstrap-app.sh
+./scripts/bootstrap-app.sh poc-apache-arrow
+
+```
+
 ## 🤝 Contribution
 
 Any change to cluster state must be done through a pull request.
