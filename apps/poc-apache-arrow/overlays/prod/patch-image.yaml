@@ -7,4 +7,4 @@ spec:
     spec:
       containers:
         - name: poc-apache-arrow
-          image: "ghcr.io/syntaxnow-labs/poc-apache-arrow:prod-latest"
+          image: "ghcr.io/syntaxnow-labs/poc-apache-arrow:main-ac7fc9a"
