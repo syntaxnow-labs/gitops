@@ -1,0 +1,33 @@
+name: Bootstrap GitOps App Structure
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_name:
+        description: "Application name (example: your repository name)"
+        required: true
+        type: string
+
+jobs:
+  scaffold:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout GitOps repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITOPS_TOKEN }}
+
+      - name: Run bootstrap script
+        run: |
+          chmod +x scripts/bootstrap-app.sh
+          ./scripts/bootstrap-app.sh "${{ inputs.app_name }}"
+
+      - name: Commit & Push scaffold
+        run: |
+          git config user.name "GitOps Bootstrap Bot"
+          git config user.email "actions@github.com"
+
+          git add apps/
+          git commit -m "Add GitOps scaffold for ${{ inputs.app_name }}"
+          git push
