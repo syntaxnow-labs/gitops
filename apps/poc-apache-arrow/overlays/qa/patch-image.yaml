@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poc-apache-arrow
+spec:
+  template:
+    spec:
+      containers:
+        - name: poc-apache-arrow
+          image: "ghcr.io/syntaxnow-labs/poc-apache-arrow:qa-latest"

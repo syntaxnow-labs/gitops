@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poc-apache-arrow
+  labels:
+    app: poc-apache-arrow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: poc-apache-arrow
+  template:
+    metadata:
+      labels:
+        app: poc-apache-arrow
+    spec:
+      imagePullSecrets:
+        - name: ghcr-creds
+      containers:
+        - name: poc-apache-arrow
+          image: ghcr.io/syntaxnow-labs/poc-apache-arrow:latest
+          ports:
+            - containerPort: 9090
