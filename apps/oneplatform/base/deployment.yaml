@@ -20,4 +20,4 @@ spec:
         - name: oneplatform
           image: ghcr.io/syntaxnow-labs/oneplatform:latest
           ports:
-            - containerPort: 9090
+            - containerPort: 80
