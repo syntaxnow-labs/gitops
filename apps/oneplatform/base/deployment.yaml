@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oneplatform
+  labels:
+    app: oneplatform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oneplatform
+  template:
+    metadata:
+      labels:
+        app: oneplatform
+    spec:
+      imagePullSecrets:
+        - name: ghcr-creds
+      containers:
+        - name: oneplatform
+          image: ghcr.io/syntaxnow-labs/oneplatform:latest
+          ports:
+            - containerPort: 9090
