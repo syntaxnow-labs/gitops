@@ -142,6 +142,8 @@ for ENV in dev qa prod; do
 
   OVERLAY_DIR="$APP_DIR/overlays/$ENV"
 
+  NAMESPACE="apps-$ENV"
+
   # Domain naming convention
   if [ "$ENV" = "prod" ]; then
     DOMAIN="${APP_LOWER}.syntaxnow.com"
@@ -149,9 +151,21 @@ for ENV in dev qa prod; do
     DOMAIN="${APP_LOWER}-${ENV}.syntaxnow.com"
   fi
 
-  TLS_SECRET="${APP_LOWER}-tls-cert"
+  TLS_SECRET="${APP_LOWER}-${ENV}-tls-cert"
 
-  echo "   Overlay: $ENV ($DOMAIN)"
+  echo "Overlay  : $ENV"
+  echo "Namespace: $NAMESPACE"
+  echo "Domain   : $DOMAIN"
+
+  # -------------------------------
+  # Namespace manifest (GitOps auto-create)
+  # -------------------------------
+  cat <<EOF > $OVERLAY_DIR/namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: $NAMESPACE
+EOF
 
   # -------------------------------
   # Patch image file (updated by CI later)
@@ -184,7 +198,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: $APP_LOWER-ingress
-  namespace: default
   annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
@@ -218,8 +231,11 @@ EOF
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+namespace: $NAMESPACE
+
 resources:
   - ../../base
+  - namespace.yaml
   - ingress.yaml
 
 configMapGenerator:
@@ -260,10 +276,11 @@ if [ -n "$DEPLOY_ENVS" ]; then
       continue
     fi
 
-    # Append cleanly
     if grep -q "^\[\]$" "$FILE"; then
       echo "- app: $APP_LOWER" > "$FILE"
     else
+      # Ensure file ends with newline before appending
+      sed -i '' -e '$a\' "$FILE"
       echo "- app: $APP_LOWER" >> "$FILE"
     fi
 
