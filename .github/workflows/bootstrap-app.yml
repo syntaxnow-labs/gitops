@@ -7,6 +7,10 @@ on:
         description: "Application name (example: your repository name)"
         required: true
         type: string
+      app_type:
+        description: "Application type (either: backend / frontend)"
+        required: true
+        type: string
 
 jobs:
   scaffold:
@@ -21,7 +25,7 @@ jobs:
       - name: Run bootstrap script
         run: |
           chmod +x scripts/bootstrap-app.sh
-          ./scripts/bootstrap-app.sh "${{ inputs.app_name }}"
+          ./scripts/bootstrap-app.sh "${{ inputs.app_name }}" "${{ inputs.app_type }}"
 
       - name: Commit & Push scaffold
         run: |
@@ -29,5 +33,5 @@ jobs:
           git config user.email "actions@github.com"
 
           git add apps/
-          git commit -m "Add GitOps scaffold for ${{ inputs.app_name }}"
+          git commit -m "Add GitOps scaffold for ${{ inputs.app_name }} for ${{ inputs.app_type }} application"
           git push
