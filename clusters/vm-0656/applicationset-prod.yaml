@@ -8,12 +8,12 @@ spec:
     - git:
         repoURL: https://github.com/syntaxnow-labs/gitops.git
         revision: main
-        directories:
-          - path: apps/*/overlays/prod
+        files:
+          - path: clusters/vm-0656/apps-prod.yaml
 
   template:
     metadata:
-      name: "{{path[1]}}-prod" # Extract app name from path apps[0]/<app-name>[1]/overlays[2]/prod[3]
+      name: "{{app}}-prod"
 
     spec:
       project: default
@@ -21,7 +21,7 @@ spec:
       source:
         repoURL: https://github.com/syntaxnow-labs/gitops.git
         targetRevision: main
-        path: "{{path}}"
+        path: "apps/{{app}}/overlays/prod"
 
       destination:
         server: https://kubernetes.default.svc
