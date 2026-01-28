@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: invoicemanager
+spec:
+  template:
+    spec:
+      containers:
+        - name: invoicemanager
+          image: "ghcr.io/syntaxnow-labs/invoicemanager:qa-latest"

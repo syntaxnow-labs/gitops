@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: invoicemanager
+spec:
+  type: ClusterIP
+  selector:
+    app: invoicemanager
+  ports:
+    - port: 80
+      targetPort: 80

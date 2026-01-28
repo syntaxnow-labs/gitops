@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: invoicemanager
+  labels:
+    app: invoicemanager
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: invoicemanager
+  template:
+    metadata:
+      labels:
+        app: invoicemanager
+    spec:
+      imagePullSecrets:
+        - name: ghcr-creds
+      containers:
+        - name: invoicemanager
+          image: ghcr.io/syntaxnow-labs/invoicemanager:latest
+          ports:
+            - containerPort: 80
