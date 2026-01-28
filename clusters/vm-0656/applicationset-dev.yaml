@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: vm-0656-dev-apps
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/syntaxnow-labs/gitops.git
+        revision: main
+        directories:
+          - path: apps/*/overlays/dev
+
+  template:
+    metadata:
+      name: "{{path[1]}}-dev"
+
+    spec:
+      project: default
+
+      source:
+        repoURL: https://github.com/syntaxnow-labs/gitops.git
+        targetRevision: main
+        path: "{{path}}"
+
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: default
+
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
