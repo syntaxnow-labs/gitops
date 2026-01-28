@@ -7,4 +7,4 @@ spec:
     spec:
       containers:
         - name: invoicemanager
-          image: "ghcr.io/syntaxnow-labs/invoicemanager:main-144f01c"
+          image: "ghcr.io/syntaxnow-labs/invoicemanager:main-5be7be6"
