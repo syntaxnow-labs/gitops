@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-react-app
+spec:
+  template:
+    spec:
+      containers:
+        - name: sample-react-app
+          image: "ghcr.io/syntaxnow-labs/sample-react-app:qa-latest"
