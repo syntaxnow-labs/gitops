@@ -1,34 +1,51 @@
 #!/bin/bash
 set -e
 
-# ---------------------------------------------------
-# GitOps App Scaffold Script
+# ===================================================
+# GitOps App Bootstrap Script
+#
+# Purpose:
+#   - Creates standard GitOps folder structure
+#   - Generates base + overlays (dev/qa/prod)
+#   - Optionally registers app into cluster env lists
 #
 # Usage:
-#   ./scripts/bootstrap-app.sh <app-name>
+#   ./scripts/bootstrap-app.sh <app-name> <app-type> <deploy-envs>
 #
-# Example:
-#   ./scripts/bootstrap-app.sh poc-apache-arrow
+# Examples:
+#   Scaffold only:
+#     ./scripts/bootstrap-app.sh oneplatform frontend ""
 #
-# Creates:
-#   apps/<app>/base
-#   apps/<app>/overlays/dev
-#   apps/<app>/overlays/qa
-#   apps/<app>/overlays/prod
-# ---------------------------------------------------
+#   Scaffold + enable in dev + prod:
+#     ./scripts/bootstrap-app.sh oneplatform frontend "dev,prod"
+# ===================================================
 
 APP_NAME=$1
 APP_TYPE=$2
+DEPLOY_ENVS=$3
 
+# ---------------------------------------------------
+# Step 0: Validate Inputs
+# ---------------------------------------------------
 if [ -z "$APP_NAME" ]; then
-  echo "Usage: ./scripts/bootstrap-app.sh <app-name>"
-  echo "Example: ./scripts/bootstrap-app.sh poc-apache-arrow"
+  echo "Missing app name"
+  echo "Usage: ./scripts/bootstrap-app.sh <app-name> <backend|frontend> <deploy-envs>"
   exit 1
 fi
 
-# Force lowercase for DNS + Kubernetes safety
-APP_LOWER=$(echo "$APP_NAME" | tr '[:upper:]' '[:lower:]')
+# Default type = backend
+if [ -z "$APP_TYPE" ]; then
+  APP_TYPE="backend"
+fi
 
+if [[ "$APP_TYPE" != "backend" && "$APP_TYPE" != "frontend" ]]; then
+  echo "Invalid app type: $APP_TYPE"
+  echo "Allowed values: backend | frontend"
+  exit 1
+fi
+
+# Force lowercase (Kubernetes + DNS safe)
+APP_LOWER=$(echo "$APP_NAME" | tr '[:upper:]' '[:lower:]')
 APP_DIR="apps/$APP_LOWER"
 
 # Prevent overwriting existing apps
@@ -37,27 +54,25 @@ if [ -d "$APP_DIR" ]; then
   exit 1
 fi
 
-if [ -z "$APP_TYPE" ]; then
-  APP_TYPE="backend"
-fi
-
-if [[ "$APP_TYPE" != "backend" && "$APP_TYPE" != "frontend" ]]; then
-  echo "Invalid type: $APP_TYPE"
-  echo "Allowed: backend | frontend"
-  exit 1
-fi
-
+# Determine container port
 if [ "$APP_TYPE" = "frontend" ]; then
   CONTAINER_PORT=80
 else
   CONTAINER_PORT=9090
 fi
 
-echo "Bootstrapping GitOps structure for: $APP_LOWER"
-echo "App type: $APP_TYPE → Container port: $CONTAINER_PORT"
+echo ""
+echo "🚀 Bootstrapping GitOps App"
+echo "-----------------------------------"
+echo "App Name     : $APP_LOWER"
+echo "App Type     : $APP_TYPE"
+echo "ContainerPort: $CONTAINER_PORT"
+echo "Deploy Envs  : ${DEPLOY_ENVS:-none}"
+echo "-----------------------------------"
+echo ""
 
 # ---------------------------------------------------
-# Create folder structure
+#  Step 1: Create Folder Structure
 # ---------------------------------------------------
 mkdir -p \
   $APP_DIR/base \
@@ -66,10 +81,10 @@ mkdir -p \
   $APP_DIR/overlays/prod
 
 # ---------------------------------------------------
-# BASE FILES (matches mock-api-service standard)
+#  Step 2: Generate BASE Manifests
 # ---------------------------------------------------
 
-echo "Creating base manifests..."
+echo "Creating base Kubernetes manifests..."
 
 cat <<EOF > $APP_DIR/base/deployment.yaml
 apiVersion: apps/v1
@@ -118,8 +133,7 @@ resources:
 EOF
 
 # ---------------------------------------------------
-# OVERLAYS (DEV + QA + PROD)
-# Same structure as mock-api-service dev overlay
+# Step 3: Generate OVERLAYS (dev/qa/prod)
 # ---------------------------------------------------
 
 echo "Creating overlays (dev, qa, prod)..."
@@ -137,10 +151,10 @@ for ENV in dev qa prod; do
 
   TLS_SECRET="${APP_LOWER}-tls-cert"
 
-  echo "   → Overlay: $ENV ($DOMAIN)"
+  echo "   Overlay: $ENV ($DOMAIN)"
 
   # -------------------------------
-  # patch-image.yaml (CI updates this)
+  # Patch image file (updated by CI later)
   # -------------------------------
   cat <<EOF > $OVERLAY_DIR/patch-image.yaml
 apiVersion: apps/v1
@@ -221,17 +235,56 @@ EOF
 done
 
 # ---------------------------------------------------
+# Step 4: Optional Cluster Registration
+# ---------------------------------------------------
+if [ -n "$DEPLOY_ENVS" ]; then
+  echo ""
+  echo "Registering app into cluster environments: $DEPLOY_ENVS"
+
+  for ENV in $(echo "$DEPLOY_ENVS" | tr "," " "); do
+
+    if [[ "$ENV" != "dev" && "$ENV" != "qa" && "$ENV" != "prod" ]]; then
+      echo "Invalid environment: $ENV (allowed: dev, qa, prod)"
+      exit 1
+    fi
+
+    FILE="clusters/vm-0656/apps-$ENV.yaml"
+    echo "Enabling $APP_LOWER in $ENV ($FILE)"
+
+    # Ensure file exists
+    [ -f "$FILE" ] || echo "[]" > "$FILE"
+
+    # Skip duplicates
+    if grep -q "app: $APP_LOWER" "$FILE"; then
+      echo "Already enabled"
+      continue
+    fi
+
+    # Append cleanly
+    if grep -q "^\[\]$" "$FILE"; then
+      echo "- app: $APP_LOWER" > "$FILE"
+    else
+      echo "- app: $APP_LOWER" >> "$FILE"
+    fi
+
+  done
+else
+  echo "No deploy environments selected → scaffold only (not deployed yet)."
+fi
+
+# ---------------------------------------------------
 # Done
 # ---------------------------------------------------
 
 echo ""
 echo "GitOps scaffold created successfully!"
-echo ""
-echo "📌 App created at:"
-echo "   $APP_DIR"
+echo "-----------------------------------"
+echo "📌 App created at:  $APP_DIR"
 echo ""
 echo "Next steps:"
 echo "  git add apps/$APP_LOWER"
+echo "  git add clusters/vm-0656/apps-*.yaml"
 echo "  git commit -m \"Add GitOps scaffold for $APP_LOWER\""
 echo "  git push"
+echo "-----------------------------------"
 echo ""

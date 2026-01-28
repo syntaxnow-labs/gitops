@@ -4,12 +4,22 @@ on:
   workflow_dispatch:
     inputs:
       app_name:
-        description: "Application name (example: your repository name)"
+        description: "Application name (example: repository name)"
         required: true
         type: string
+
       app_type:
-        description: "Application type (either: backend / frontend)"
+        description: "Application type (backend / frontend)"
         required: true
+        type: string
+
+      deploy_envs:
+        description: >
+          Environments to deploy (comma-separated: dev,qa,prod).
+          Leave empty for scaffold-only.
+          Example: dev / dev,qa / dev,qa,prod
+        required: false
+        default: ""
         type: string
 
 jobs:
@@ -17,21 +27,57 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # ---------------------------------------------
+      # Step 1: Checkout GitOps Repo
+      # ---------------------------------------------
       - name: Checkout GitOps repo
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITOPS_TOKEN }}
 
+      # ---------------------------------------------
+      # Step 2: Run Bootstrap Script
+      # Creates app structure + optional env enablement
+      # ---------------------------------------------
       - name: Run bootstrap script
         run: |
-          chmod +x scripts/bootstrap-app.sh
-          ./scripts/bootstrap-app.sh "${{ inputs.app_name }}" "${{ inputs.app_type }}"
+          echo "Bootstrapping GitOps structure..."
+          echo "App Name   : ${{ inputs.app_name }}"
+          echo "App Type   : ${{ inputs.app_type }}"
+          echo "Deploy Envs: ${{ inputs.deploy_envs }}"
 
+          chmod +x scripts/bootstrap-app.sh
+
+          ./scripts/bootstrap-app.sh \
+            "${{ inputs.app_name }}" \
+            "${{ inputs.app_type }}" \
+            "${{ inputs.deploy_envs }}"
+
+          echo "Bootstrap completed."
+
+      # ---------------------------------------------
+      # Step 3: Commit & Push Changes
+      # Includes scaffold + env registration updates
+      # ---------------------------------------------
       - name: Commit & Push scaffold
         run: |
+          echo "Preparing Git commit..."
+
           git config user.name "GitOps Bootstrap Bot"
           git config user.email "actions@github.com"
 
-          git add apps/
-          git commit -m "Add GitOps scaffold for ${{ inputs.app_name }} for ${{ inputs.app_type }} application"
+          # Stage both app scaffold + cluster env list changes
+          git add apps/ clusters/vm-0656/apps-*.yaml
+
+          # Prevent failure if no changes exist
+          if git diff --cached --quiet; then
+            echo "No changes detected — skipping commit."
+            exit 0
+          fi
+
+          git commit -m "Bootstrap ${{ inputs.app_name }} (${{ inputs.app_type }}) → envs: [${{ inputs.deploy_envs }}]"
+
+          echo "Pushing changes to GitOps repo..."
           git push
+
+          echo "GitOps scaffold pushed successfully!"
