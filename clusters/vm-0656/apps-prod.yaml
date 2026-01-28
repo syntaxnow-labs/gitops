@@ -3,4 +3,3 @@
 - app: poc-apache-arrow
 - app: sample-react-app
 - app: invoicemanager
-- app: mock-api-service
