@@ -20,4 +20,4 @@ spec:
         - name: sample-react-app
           image: ghcr.io/syntaxnow-labs/sample-react-app:latest
           ports:
-            - containerPort: 8080
+            - containerPort: 80
