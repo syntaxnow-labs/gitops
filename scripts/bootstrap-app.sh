@@ -279,8 +279,8 @@ if [ -n "$DEPLOY_ENVS" ]; then
     if grep -q "^\[\]$" "$FILE"; then
       echo "- app: $APP_LOWER" > "$FILE"
     else
-      # Ensure file ends with newline before appending
-      sed -i '' -e '$a\' "$FILE"
+      # Ensure file ends with a newline before appending
+      printf "\n" >> "$FILE"
       echo "- app: $APP_LOWER" >> "$FILE"
     fi
 
