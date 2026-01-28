@@ -13,7 +13,7 @@ spec:
 
   template:
     metadata:
-      name: "{{path.basename}}-prod"
+      name: "{{path[1]}}-prod" # Extract app name from path apps[0]/<app-name>[1]/overlays[2]/prod[3]
 
     spec:
       project: default
