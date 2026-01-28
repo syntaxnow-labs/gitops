@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: syntaxnow-assets
+spec:
+  type: ClusterIP
+  selector:
+    app: syntaxnow-assets
+  ports:
+    - port: 80
+      targetPort: 9090
