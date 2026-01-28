@@ -20,4 +20,4 @@ spec:
         - name: invoicemanager
           image: ghcr.io/syntaxnow-labs/invoicemanager:latest
           ports:
-            - containerPort: 80
+            - containerPort: 8080
