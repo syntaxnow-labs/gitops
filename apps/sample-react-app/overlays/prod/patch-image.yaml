@@ -7,4 +7,4 @@ spec:
     spec:
       containers:
         - name: sample-react-app
-          image: "ghcr.io/syntaxnow-labs/sample-react-app:prod-latest"
+          image: "ghcr.io/syntaxnow-labs/sample-react-app:main-54e5d1d"
