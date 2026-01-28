@@ -1,4 +1,5 @@
 - app: oneplatform
 - app: syntaxnow-assets
 - app: poc-apache-arrow
-- app: sample-react-app- app: invoicemanager
+- app: sample-react-app
+- app: invoicemanager
