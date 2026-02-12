@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sky-ledger-ui
+spec:
+  template:
+    spec:
+      containers:
+        - name: sky-ledger-ui
+          image: "ghcr.io/syntaxnow-labs/sky-ledger-ui:dev-latest"

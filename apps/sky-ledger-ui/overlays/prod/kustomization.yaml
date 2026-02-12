@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: apps-prod
+
+resources:
+  - ../../base
+  - namespace.yaml
+  - ingress.yaml
+
+configMapGenerator:
+  - name: sky-ledger-ui-config
+    behavior: create
+    files:
+      - values-prod.yaml
+
+patches:
+  - path: patch-image.yaml
