@@ -21,3 +21,20 @@ spec:
           image: ghcr.io/syntaxnow-labs/syntaxnow-identity-service:latest
           ports:
             - containerPort: 9090
+
+          envFrom:
+            - secretRef:
+                name: identity-secrets
+
+          volumeMounts:
+            - name: firebase-volume
+              mountPath: /app/secrets
+              readOnly: true
+
+      volumes:
+        - name: firebase-volume
+          secret:
+            secretName: identity-secrets
+            items:
+              - key: firebase.json
+                path: firebase.json
