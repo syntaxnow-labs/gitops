@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: syntaxnow-identity-service
+spec:
+  type: ClusterIP
+  selector:
+    app: syntaxnow-identity-service
+  ports:
+    - port: 80
+      targetPort: 9090

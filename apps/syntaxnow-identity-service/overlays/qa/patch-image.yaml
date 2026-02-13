@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: syntaxnow-identity-service
+spec:
+  template:
+    spec:
+      containers:
+        - name: syntaxnow-identity-service
+          image: "ghcr.io/syntaxnow-labs/syntaxnow-identity-service:qa-latest"

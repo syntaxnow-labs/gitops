@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: syntaxnow-identity-service
+  labels:
+    app: syntaxnow-identity-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: syntaxnow-identity-service
+  template:
+    metadata:
+      labels:
+        app: syntaxnow-identity-service
+    spec:
+      imagePullSecrets:
+        - name: ghcr-creds
+      containers:
+        - name: syntaxnow-identity-service
+          image: ghcr.io/syntaxnow-labs/syntaxnow-identity-service:latest
+          ports:
+            - containerPort: 9090
