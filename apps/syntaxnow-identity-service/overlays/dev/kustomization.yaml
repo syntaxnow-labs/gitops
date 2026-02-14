@@ -12,8 +12,8 @@ resources:
 configMapGenerator:
   - name: syntaxnow-identity-service-config
     behavior: create
-    files:
-      - values-dev.yaml
+    envs:
+      - values-dev.env
 
 patches:
   - path: patch-image.yaml
