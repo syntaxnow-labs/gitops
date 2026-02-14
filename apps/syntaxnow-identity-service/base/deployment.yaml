@@ -22,6 +22,12 @@ spec:
           ports:
             - containerPort: 9090
 
+          # Static config from values-dev.yaml (ConfigMap)
+          envFrom:
+            - configMapRef:
+                name: syntaxnow-identity-service-config
+
+          # Secrets from OCI K3s Mounted(mounted as files)
           volumeMounts:
             - name: app-secrets
               mountPath: /app/secrets

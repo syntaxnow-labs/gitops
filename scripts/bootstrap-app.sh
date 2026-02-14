@@ -110,6 +110,17 @@ spec:
           image: ghcr.io/syntaxnow-labs/$APP_LOWER:latest
           ports:
             - containerPort: $CONTAINER_PORT
+          envFrom:
+            - configMapRef:
+                name: ${APP_LOWER}-config
+          volumeMounts:
+            - name: app-secrets
+              mountPath: /app/secrets
+              readOnly: true
+      volumes:
+        - name: app-secrets
+          secret:
+            secretName: identity-secrets
 EOF
 
 cat <<EOF > $APP_DIR/base/service.yaml
@@ -160,12 +171,12 @@ for ENV in dev qa prod; do
   # -------------------------------
   # Namespace manifest (GitOps auto-create)
   # -------------------------------
-  cat <<EOF > $OVERLAY_DIR/namespace.yaml
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: $NAMESPACE
-EOF
+#   cat <<EOF > $OVERLAY_DIR/namespace.yaml
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: $NAMESPACE
+# EOF
 
   # -------------------------------
   # Patch image file (updated by CI later)
@@ -188,6 +199,27 @@ EOF
   # -------------------------------
   cat <<EOF > $OVERLAY_DIR/values-$ENV.yaml
 APP_ENV: $ENV
+EOF
+
+  # -------------------------------
+  # ExternalSecret
+  # -------------------------------
+  cat <<EOF > $OVERLAY_DIR/secrets.yaml
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: identity-secrets
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: oci-vault-store
+    kind: ClusterSecretStore
+  target:
+    name: identity-secrets
+    creationPolicy: Owner
+  dataFrom:
+    - extract:
+        key: ${APP_LOWER}-${ENV}
 EOF
 
   # -------------------------------
@@ -235,7 +267,7 @@ namespace: $NAMESPACE
 
 resources:
   - ../../base
-  - namespace.yaml
+  - secrets.yaml
   - ingress.yaml
 
 configMapGenerator:
