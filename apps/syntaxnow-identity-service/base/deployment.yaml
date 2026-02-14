@@ -22,19 +22,12 @@ spec:
           ports:
             - containerPort: 9090
 
-          envFrom:
-            - secretRef:
-                name: identity-secrets
-
           volumeMounts:
-            - name: firebase-volume
+            - name: app-secrets
               mountPath: /app/secrets
               readOnly: true
 
       volumes:
-        - name: firebase-volume
+        - name: app-secrets
           secret:
             secretName: identity-secrets
-            items:
-              - key: firebase.json
-                path: firebase.json

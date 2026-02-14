@@ -1,1 +1,7 @@
+APP_NAME: syntaxnow-identity-service
 APP_ENV: dev
+KEYCLOAK_URL: https://auth.syntaxnow.com
+KEYCLOAK_REALM: syntaxnow
+KEYCLOAK_ADMIN_USER: admin
+KEYCLOAK_CLIENT_ID: syntaxnow-identity-service
+LOG_LEVEL: INFO
