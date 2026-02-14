@@ -27,13 +27,5 @@ spec:
             - configMapRef:
                 name: syntaxnow-identity-service-config
 
-          # Secrets from OCI K3s Mounted(mounted as files)
-          volumeMounts:
-            - name: app-secrets
-              mountPath: /app/secrets
-              readOnly: true
-
-      volumes:
-        - name: app-secrets
-          secret:
-            secretName: identity-secrets
+            - secretRef:
+                name: identity-secrets
