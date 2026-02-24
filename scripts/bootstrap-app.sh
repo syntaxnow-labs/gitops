@@ -319,7 +319,7 @@ if [ -n "$DEPLOY_ENVS" ]; then
       echo "- app: $APP_LOWER" > "$FILE"
     else
       # Ensure file ends with a newline before appending
-      printf "\n" >> "$FILE"
+      sed -i -e '$a\' "$FILE"
       echo "- app: $APP_LOWER" >> "$FILE"
     fi
 
