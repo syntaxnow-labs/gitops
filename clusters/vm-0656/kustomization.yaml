@@ -5,3 +5,6 @@ resources:
   - applicationset-prod.yaml
   - applicationset-dev.yaml
   - applicationset-qa.yaml
+  - apps-dev-infra.yaml
+  - apps-qa-infra.yaml
+  - apps-prod-infra.yaml
