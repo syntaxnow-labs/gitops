@@ -113,14 +113,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: ${APP_LOWER}-config
-          volumeMounts:
-            - name: app-secrets
-              mountPath: /app/secrets
-              readOnly: true
-      volumes:
-        - name: app-secrets
-          secret:
-            secretName: identity-secrets
+            - secretRef:
+                name: identity-secrets
 EOF
 
 cat <<EOF > $APP_DIR/base/service.yaml
@@ -193,12 +187,24 @@ spec:
         - name: $APP_LOWER
           image: "ghcr.io/syntaxnow-labs/$APP_LOWER:$ENV-latest"
 EOF
+# -------------------------------
+# namespace.yaml
+# -------------------------------
+
+cat <<EOF > $OVERLAY_DIR/namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: $NAMESPACE
+EOF
 
   # -------------------------------
   # values-env.yaml (runtime config placeholder)
   # -------------------------------
-  cat <<EOF > $OVERLAY_DIR/values-$ENV.yaml
-APP_ENV: $ENV
+  cat <<EOF > $OVERLAY_DIR/values-$ENV.env
+APP_NAME=$APP_LOWER
+APP_ENV=$ENV
+SPRING_PROFILES_ACTIVE=$ENV
 EOF
 
   # -------------------------------
@@ -268,13 +274,14 @@ namespace: $NAMESPACE
 resources:
   - ../../base
   - secrets.yaml
+  - namespace.yaml
   - ingress.yaml
 
 configMapGenerator:
   - name: ${APP_LOWER}-config
     behavior: create
-    files:
-      - values-$ENV.yaml
+    envs:
+      - values-$ENV.env
 
 patches:
   - path: patch-image.yaml
