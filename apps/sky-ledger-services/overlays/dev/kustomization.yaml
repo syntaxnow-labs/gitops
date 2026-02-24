@@ -12,7 +12,7 @@ resources:
 configMapGenerator:
   - name: sky-ledger-services-config
     behavior: create
-    files:
+    envs:
       - values-dev.env
 
 patches:
