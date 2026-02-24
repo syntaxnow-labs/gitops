@@ -162,15 +162,6 @@ for ENV in dev qa prod; do
   echo "Namespace: $NAMESPACE"
   echo "Domain   : $DOMAIN"
 
-  # -------------------------------
-  # Namespace manifest (GitOps auto-create)
-  # -------------------------------
-#   cat <<EOF > $OVERLAY_DIR/namespace.yaml
-# apiVersion: v1
-# kind: Namespace
-# metadata:
-#   name: $NAMESPACE
-# EOF
 
   # -------------------------------
   # Patch image file (updated by CI later)
@@ -186,16 +177,6 @@ spec:
       containers:
         - name: $APP_LOWER
           image: "ghcr.io/syntaxnow-labs/$APP_LOWER:$ENV-latest"
-EOF
-# -------------------------------
-# namespace.yaml
-# -------------------------------
-
-cat <<EOF > $OVERLAY_DIR/namespace.yaml
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: $NAMESPACE
 EOF
 
   # -------------------------------
@@ -274,7 +255,6 @@ namespace: $NAMESPACE
 resources:
   - ../../base
   - secrets.yaml
-  - namespace.yaml
   - ingress.yaml
 
 configMapGenerator:
