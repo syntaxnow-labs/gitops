@@ -7,12 +7,14 @@ resources:
   - ../../base
   - secrets.yaml
   - ingress.yaml
+  - namespace.yaml
+  - secrets.yaml
 
 configMapGenerator:
   - name: sky-ledger-services-config
     behavior: create
     files:
-      - values-dev.yaml
+      - values-dev.env
 
 patches:
   - path: patch-image.yaml

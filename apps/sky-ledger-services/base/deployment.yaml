@@ -21,14 +21,11 @@ spec:
           image: ghcr.io/syntaxnow-labs/sky-ledger-services:latest
           ports:
             - containerPort: 9090
+
+          # Static config from values-dev.yaml (ConfigMap)
           envFrom:
             - configMapRef:
                 name: sky-ledger-services-config
-          volumeMounts:
-            - name: app-secrets
-              mountPath: /app/secrets
-              readOnly: true
-      volumes:
-        - name: app-secrets
-          secret:
-            secretName: identity-secrets
+
+            - secretRef:
+                name: identity-secrets
