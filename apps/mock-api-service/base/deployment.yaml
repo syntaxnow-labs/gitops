@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mock-api-service
+  labels:
+    app: mock-api-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mock-api-service
+  template:
+    metadata:
+      labels:
+        app: mock-api-service
+    spec:
+      imagePullSecrets:
+        - name: ghcr-creds
+      containers:
+        - name: mock-api-service
+          image: ghcr.io/syntaxnow-labs/mock-api-service:latest
+          ports:
+            - containerPort: 9090
+          envFrom:
+            - configMapRef:
+                name: mock-api-service-config
+            - secretRef:
+                name: identity-secrets
