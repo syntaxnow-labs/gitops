@@ -114,7 +114,7 @@ spec:
             - configMapRef:
                 name: ${APP_LOWER}-config
             - secretRef:
-                name: identity-secrets
+                name: ${APP_LOWER}-secrets
 EOF
 
 cat <<EOF > $APP_DIR/base/service.yaml
@@ -195,14 +195,14 @@ EOF
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
-  name: identity-secrets
+  name: ${APP_LOWER}-secrets
 spec:
   refreshInterval: 1h
   secretStoreRef:
     name: oci-vault-store
     kind: ClusterSecretStore
   target:
-    name: identity-secrets
+    name: ${APP_LOWER}-secrets
     creationPolicy: Owner
   dataFrom:
     - extract:
