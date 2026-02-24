@@ -28,4 +28,4 @@ spec:
                 name: syntaxnow-identity-service-config
 
             - secretRef:
-                name: identity-secrets
+                name: syntaxnow-identity-service-secrets

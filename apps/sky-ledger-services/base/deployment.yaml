@@ -25,4 +25,4 @@ spec:
             - configMapRef:
                 name: sky-ledger-services-config
             - secretRef:
-                name: identity-secrets
+                name: sky-ledger-service-secrets
