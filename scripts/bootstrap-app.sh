@@ -263,7 +263,7 @@ EOF
 	if [ "$REQUIRES_SECRET" = "true" ]; then
 		SECRET_RESOURCE="  - secrets.yaml"
 	else
-		SECRET_RESOURCE=""
+		SECRET_RESOURCE="  # no secrets for this app"
 	fi
 
 	cat <<EOF >$OVERLAY_DIR/kustomization.yaml
@@ -274,8 +274,8 @@ namespace: $NAMESPACE
 
 resources:
   - ../../base
-$SECRET_RESOURCE
   - ingress.yaml
+$SECRET_RESOURCE
 
 configMapGenerator:
   - name: ${APP_LOWER}-config
