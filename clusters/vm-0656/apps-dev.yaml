@@ -1,4 +1,3 @@
 - app: mock-api-service
 - app: syntaxnow-identity-service
 
-- app: sky-ledger-services
