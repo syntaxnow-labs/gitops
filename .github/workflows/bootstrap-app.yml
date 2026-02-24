@@ -21,6 +21,12 @@ on:
         required: false
         default: ""
         type: string
+        
+      with_secrets:
+        description: "Does this app require Vault secrets? (true / false)"
+        required: false
+        default: "false"
+        type: string
 
 jobs:
   scaffold:
@@ -45,13 +51,15 @@ jobs:
           echo "App Name   : ${{ inputs.app_name }}"
           echo "App Type   : ${{ inputs.app_type }}"
           echo "Deploy Envs: ${{ inputs.deploy_envs }}"
+          echo "With Secrets: ${{ inputs.with_secrets }}"
 
           chmod +x scripts/bootstrap-app.sh
 
           ./scripts/bootstrap-app.sh \
             "${{ inputs.app_name }}" \
             "${{ inputs.app_type }}" \
-            "${{ inputs.deploy_envs }}"
+            "${{ inputs.deploy_envs }}" \
+            "${{ inputs.with_secrets }}"
 
           echo "Bootstrap completed."
 
@@ -75,7 +83,7 @@ jobs:
             exit 0
           fi
 
-          git commit -m "Bootstrap ${{ inputs.app_name }} (${{ inputs.app_type }}) → envs: [${{ inputs.deploy_envs }}]"
+          git commit -m "Bootstrap ${{ inputs.app_name }} (${{ inputs.app_type }}) → envs: [${{ inputs.deploy_envs }}] → secrets: [${{ inputs.with_secrets }}]"
 
           echo "Pushing changes to GitOps repo..."
           git push
