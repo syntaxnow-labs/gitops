@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: apps-qa-infra
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/syntaxnow-labs/gitops.git
+    targetRevision: main
+    path: platform/namespaces/qa
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: apps-qa
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

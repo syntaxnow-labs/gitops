@@ -6,7 +6,6 @@ namespace: apps-dev
 resources:
   - ../../base
   - ingress.yaml
-  - namespace.yaml
   - secrets.yaml
 
 configMapGenerator:
