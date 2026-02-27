@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sky-ledger-ui
+  labels:
+    app: sky-ledger-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sky-ledger-ui
+  template:
+    metadata:
+      labels:
+        app: sky-ledger-ui
+    spec:
+      imagePullSecrets:
+        - name: ghcr-creds
+      containers:
+        - name: sky-ledger-ui
+          image: ghcr.io/syntaxnow-labs/sky-ledger-ui:latest
+          ports:
+            - containerPort: 80
+          envFrom:
+            - configMapRef:
+                name: sky-ledger-ui-config
+
