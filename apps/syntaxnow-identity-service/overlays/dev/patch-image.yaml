@@ -7,4 +7,4 @@ spec:
     spec:
       containers:
         - name: syntaxnow-identity-service
-          image: "ghcr.io/syntaxnow-labs/syntaxnow-identity-service:dev-ed6c959"
+          image: "ghcr.io/syntaxnow-labs/syntaxnow-identity-service:dev-e68b2e0"
