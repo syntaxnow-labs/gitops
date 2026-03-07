@@ -7,4 +7,4 @@ spec:
     spec:
       containers:
         - name: sky-ledger-services
-          image: "ghcr.io/syntaxnow-labs/sky-ledger-services:dev-caf228c"
+          image: "ghcr.io/syntaxnow-labs/sky-ledger-services:dev-c24bc97"
