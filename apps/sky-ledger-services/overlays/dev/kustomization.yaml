@@ -16,3 +16,4 @@ configMapGenerator:
 
 patches:
   - path: patch-image.yaml
+  - path: patch-replicas.yaml

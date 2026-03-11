@@ -5,7 +5,7 @@ metadata:
   labels:
     app: sky-ledger-services
 spec:
-  replicas: 1
+  revisionHistoryLimit: 3
   selector:
     matchLabels:
       app: sky-ledger-services
